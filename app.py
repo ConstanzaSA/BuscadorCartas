@@ -247,7 +247,7 @@ st.markdown(
             margin-bottom: 1.4rem;
 
             border: 1px solid rgba(170, 141, 175, 0.20);
-            border-radius: 22px !important;
+            border-radius: 18px !important;
 
             background: linear-gradient(
                 115deg,
