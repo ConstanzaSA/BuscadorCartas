@@ -284,10 +284,16 @@ st.markdown(
             font-size: 1rem;
         }}
         @media (max-width: 700px) {{
-            .hero {{
+            .buscador-hero {{
                 min-height: 130px;
                 padding: 1.2rem;
                 gap: 1rem;
+                border-radius: 18px !important;
+                clip-path: inset(0 round 18px);
+            }}
+
+            .buscador-hero h1 {{
+                font-size: 2rem;
             }}
 
             .hero-logo {{
@@ -297,10 +303,6 @@ st.markdown(
                 max-width: 85px !important;
                 max-height: 85px !important;
                 flex-basis: 85px;
-            }}
-
-            .hero h1 {{
-                font-size: 2rem;
             }}
         }}
         
