@@ -429,8 +429,8 @@ imagen_html = (
 st.markdown(
     f"""
     <section class="hero">
-        <div>
-            <h1>Buscador de Cartas</h1>
+    <div class="hero-text">
+        <h1>Buscador de Cartas</h1>
             <p>Optimiza tu búsqueda de cartas para el stock actual de la tienda El Wombat Rabioso TCG.</p>
         </div>
         {imagen_html}
