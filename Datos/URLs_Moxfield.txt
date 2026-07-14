@@ -1,0 +1,3 @@
+# Agrega una URL pública de Moxfield por línea.
+# La página buscará en todos los mazos listados aquí.
+https://moxfield.com/decks/yqdRPdoUlEiFz21qKYHGMA
