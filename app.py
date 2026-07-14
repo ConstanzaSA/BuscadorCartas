@@ -414,7 +414,14 @@ with columna_buscador:
 if enviar:
     cartas_buscadas = parsear_cartas(texto_cartas)
     if not cartas_buscadas:
-        st.warning("Pega al menos una carta para comenzar.")
+        st.markdown(
+            """
+            <div class="empty-warning">
+                Pega al menos una carta para comenzar la búsqueda.
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
     else:
         with st.spinner("Consultando el stock de los mazos..."):
             resultados, no_encontradas, errores = buscar_cartas(
