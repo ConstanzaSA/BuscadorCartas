@@ -113,6 +113,7 @@ def parsear_cartas(texto: str) -> list[dict[str, Any]]:
 
     return list(cartas_por_nombre.values())
 
+
 def nombre_carpeta(clave: str) -> str:
     return NOMBRES_CARPETAS.get(
         str(clave).casefold(),
@@ -138,12 +139,21 @@ def cargar_mazo(url: str) -> dict[str, Any]:
 
 
 def buscar_cartas(
-    cartas_buscadas: list[str],
+    cartas_buscadas: list[dict[str, Any]],
     urls: list[str],
 ) -> tuple[list[dict[str, Any]], list[str], list[dict[str, str]]]:
     resultados: list[dict[str, Any]] = []
     errores: list[dict[str, str]] = []
     nombres_encontrados: set[str] = set()
+
+    nombres_solicitados = [
+        carta["nombre"]
+        for carta in cartas_buscadas
+    ]
+    cantidades_solicitadas = {
+        normalizar_nombre(carta["nombre"]): int(carta["Cantidad_buscada"])
+        for carta in cartas_buscadas
+    }
 
     progreso = st.progress(0, text="Preparando búsqueda...")
 
@@ -155,10 +165,18 @@ def buscar_cartas(
             )
 
             mazo = cargar_mazo(url)
-            coincidencias = Comparar_cartas(mazo, cartas_buscadas)
+            coincidencias = Comparar_cartas(mazo, nombres_solicitados)
 
             for carta in coincidencias:
-                cantidad = int(carta.get("cantidad") or 1)
+                nombre_encontrado = carta.get("nombre", "")
+                clave_buscada = normalizar_nombre(
+                    carta.get("nombre_buscado") or nombre_encontrado
+                )
+                cantidad_buscada = cantidades_solicitadas.get(
+                    clave_buscada,
+                    1,
+                )
+                cantidad_disponible = int(carta.get("cantidad") or 0)
                 precio_ck = carta.get("precio_ck")
 
                 precio_clp = (
@@ -170,23 +188,19 @@ def buscar_cartas(
                 resultados.append(
                     {
                         "Imagen": carta.get("imagen_url", ""),
-                        "Carta": carta.get("nombre", ""),
+                        "Carta": nombre_encontrado,
                         "Mazo": mazo.get("nombre", ""),
                         "Carpeta": nombre_carpeta(
                             carta.get("tablero", "")
                         ),
-                        "Cantidad": cantidad,
+                        "Cantidad_buscada": cantidad_buscada,
+                        "Cantidad disponible": cantidad_disponible,
                         "Edición": carta.get("set_name", ""),
                         "Acabado": carta.get("finish", "nonfoil"),
                         "Precio CK": precio_ck,
                         "Precio CLP": precio_clp,
-                        "Total CK": (
-                            round(float(precio_ck) * cantidad, 2)
-                            if precio_ck is not None
-                            else None
-                        ),
-                        "Total CLP": (
-                            round(precio_clp * cantidad)
+                        "Total CLP buscada": (
+                            round(precio_clp * cantidad_buscada)
                             if precio_clp is not None
                             else None
                         ),
@@ -194,13 +208,11 @@ def buscar_cartas(
                             "cardkingdom_url",
                             "",
                         ),
-                        "Moxfield": mazo.get("url", ""),
+                        "Link Moxfield": mazo.get("url", ""),
                     }
                 )
 
-                nombres_encontrados.add(
-                    normalizar_nombre(carta.get("nombre", ""))
-                )
+                nombres_encontrados.add(clave_buscada)
 
         except Exception as error:
             errores.append(
@@ -214,8 +226,8 @@ def buscar_cartas(
     progreso.empty()
 
     mapa_buscadas = {
-        normalizar_nombre(nombre): nombre
-        for nombre in cartas_buscadas
+        normalizar_nombre(carta["nombre"]): carta["nombre"]
+        for carta in cartas_buscadas
     }
 
     no_encontradas = [
@@ -621,6 +633,7 @@ with columna_buscador:
                 "no_encontradas",
                 "errores",
                 "total_buscadas",
+                "total_unidades_buscadas",
             ):
                 st.session_state.pop(clave, None)
 
@@ -643,6 +656,10 @@ with columna_buscador:
             st.session_state["no_encontradas"] = no_encontradas
             st.session_state["errores"] = errores
             st.session_state["total_buscadas"] = len(cartas_buscadas)
+            st.session_state["total_unidades_buscadas"] = sum(
+                int(carta["Cantidad_buscada"])
+                for carta in cartas_buscadas
+            )
 
 
 # ============================================================
@@ -652,15 +669,19 @@ with columna_buscador:
 busqueda_realizada = "resultados" in st.session_state
 resultados_actuales = st.session_state.get("resultados", [])
 total_buscadas = st.session_state.get("total_buscadas", 0)
+total_unidades_buscadas = st.session_state.get(
+    "total_unidades_buscadas",
+    0,
+)
 
 if resultados_actuales:
     df_actual = pd.DataFrame(resultados_actuales)
     cartas_unicas = int(df_actual["Carta"].nunique())
-    unidades = int(df_actual["Cantidad"].sum())
-    total_clp = float(df_actual["Total CLP"].fillna(0).sum())
+    total_clp = float(
+        df_actual["Total CLP buscada"].fillna(0).sum()
+    )
 else:
     cartas_unicas = 0
-    unidades = 0
     total_clp = 0.0
 
 with columna_resumen:
@@ -673,7 +694,7 @@ with columna_resumen:
     tarjeta_metrica(
         "Valor total CLP",
         precio_clp_texto(total_clp) if busqueda_realizada else "—",
-        "Precio CK x 700 x cantidad",
+        "Precio CLP × cantidad solicitada",
     )
 
     tarjeta_metrica(
@@ -684,16 +705,28 @@ with columna_resumen:
             else "—"
         ),
         (
-            f"{unidades} unidades disponibles"
+            f"{total_unidades_buscadas} unidades solicitadas"
             if busqueda_realizada
             else ""
         ),
     )
 
     if resultados_actuales:
+        columnas_csv = [
+            "Carta",
+            "Mazo",
+            "Cantidad_buscada",
+            "Edición",
+            "Acabado",
+            "Precio CK",
+            "Precio CLP",
+            "Total CLP buscada",
+            "Link Moxfield",
+        ]
+
         csv_resultados = pd.DataFrame(
             resultados_actuales
-        ).to_csv(
+        )[columnas_csv].to_csv(
             index=False,
             sep=";",
             decimal=",",
@@ -734,11 +767,13 @@ if busqueda_realizada:
                 "Imagen",
                 "Carta",
                 "Mazo",
-                "Cantidad",
+                "Cantidad_buscada",
+                "Cantidad disponible",
                 "Edición",
                 "Acabado",
                 "Precio CK",
                 "Precio CLP",
+                "Total CLP buscada",
             ]
 
             st.dataframe(
@@ -751,8 +786,12 @@ if busqueda_realizada:
                         "Imagen",
                         width="small",
                     ),
-                    "Cantidad": st.column_config.NumberColumn(
-                        "Cantidad",
+                    "Cantidad_buscada": st.column_config.NumberColumn(
+                        "Cantidad buscada",
+                        format="%d",
+                    ),
+                    "Cantidad disponible": st.column_config.NumberColumn(
+                        "Cantidad disponible",
                         format="%d",
                     ),
                     "Precio CK": st.column_config.NumberColumn(
@@ -761,6 +800,10 @@ if busqueda_realizada:
                     ),
                     "Precio CLP": st.column_config.NumberColumn(
                         "Precio CLP",
+                        format="$ %d",
+                    ),
+                    "Total CLP buscada": st.column_config.NumberColumn(
+                        "Total CLP buscada",
                         format="$ %d",
                     ),
                 },
@@ -789,7 +832,12 @@ if busqueda_realizada:
                                 f"{fila['Mazo']} · {fila['Carpeta']}"
                             )
                             st.write(
-                                f"**Cantidad:** {fila['Cantidad']}"
+                                "**Cantidad buscada:** "
+                                f"{fila['Cantidad_buscada']}"
+                            )
+                            st.write(
+                                "**Cantidad disponible:** "
+                                f"{fila['Cantidad disponible']}"
                             )
                             st.write(
                                 f"**Edición:** {fila['Edición']}"
@@ -805,6 +853,10 @@ if busqueda_realizada:
                                 "**Precio CLP:** "
                                 f"{precio_clp_texto(fila['Precio CLP'])}"
                             )
+                            st.write(
+                                "**Total CLP buscada:** "
+                                f"{precio_clp_texto(fila['Total CLP buscada'])}"
+                            )
 
                             if fila.get("Card Kingdom"):
                                 st.link_button(
@@ -815,7 +867,7 @@ if busqueda_realizada:
 
                             st.link_button(
                                 "Abrir mazo en Moxfield",
-                                fila["Moxfield"],
+                                fila["Link Moxfield"],
                                 use_container_width=True,
                             )
     else:
