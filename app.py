@@ -217,7 +217,88 @@ st.markdown(
             padding-top: 1.2rem;
             padding-bottom: 3rem;
         }}
+        .hero {{
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 2rem;
 
+            min-height: 160px;
+            padding: 1.6rem 2rem;
+            margin-bottom: 1.4rem;
+
+            border: 1px solid rgba(170, 141, 175, 0.20);
+            border-radius: 22px;
+
+            background: linear-gradient(
+                115deg,
+                {COLOR_MORADO_OSCURO} 0%,
+                #44365F 65%,
+                {COLOR_MORADO_MEDIO} 100%
+            );
+
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.30);
+            overflow: hidden;
+        }}
+
+        .hero-text {{
+            flex: 1;
+            min-width: 0;
+        }}
+
+        .hero h1 {{
+            margin: 0 0 0.8rem 0;
+            color: {COLOR_BLANCO};
+            font-size: clamp(2rem, 4vw, 3.2rem);
+            line-height: 1.05;
+            font-weight: 850;
+        }}
+
+        .hero p {{
+            margin: 0;
+            color: #EEEAF3;
+            font-size: 1rem;
+        }}
+
+        .hero-logo {{
+            width: 125px !important;
+            height: 125px !important;
+            min-width: 125px !important;
+            max-width: 125px !important;
+            max-height: 125px !important;
+
+            object-fit: contain;
+            flex: 0 0 125px;
+
+            margin-left: auto;
+            padding: 7px;
+
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.94);
+            box-shadow: 0 7px 20px rgba(0, 0, 0, 0.25);
+        }}
+
+        @media (max-width: 700px) {{
+            .hero {{
+                min-height: 130px;
+                padding: 1.2rem;
+                gap: 1rem;
+            }}
+
+            .hero-logo {{
+                width: 85px !important;
+                height: 85px !important;
+                min-width: 85px !important;
+                max-width: 85px !important;
+                max-height: 85px !important;
+                flex-basis: 85px;
+            }}
+
+            .hero h1 {{
+                font-size: 2rem;
+            }}
+        }}
+        
         p, span, label {{
             color: {COLOR_TEXTO};
         }}
