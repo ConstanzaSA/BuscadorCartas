@@ -402,6 +402,7 @@ with columna_buscador:
                 "1 Akroma's Will\n"
                 "1 Sol Ring"
             ),
+            height=250,
             label_visibility="collapsed",
         )
         enviar = st.form_submit_button(
