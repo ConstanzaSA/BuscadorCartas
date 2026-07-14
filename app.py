@@ -451,17 +451,31 @@ else:
 
 with columna_resumen:
     tarjeta_metrica(
-        "Cartas encontradas",
-        f"{cartas_unicas}/{total_buscadas}" if total_buscadas else "—",
-        f"{unidades} unidades disponibles" if resultados_actuales else "",
+        "Valor CK tienda",
+        f"1 CK = ${VALOR_CK_CLP} CLP",
+        "Conversión fija utilizada por la tienda",
     )
 
+    tarjeta_metrica(
+        "Valor total CLP",
+        (
+            precio_clp_texto(total_clp)
+            if resultados_actuales
+            else "—"
+        ),
+        "Precio CK x 700 x cantidad",
+    )
+
+    # El botón solo aparece después de realizar una búsqueda.
     if resultados_actuales:
-        csv_resultados = pd.DataFrame(resultados_actuales).to_csv(
+        csv_resultados = pd.DataFrame(
+            resultados_actuales
+        ).to_csv(
             index=False,
             sep=";",
             decimal=",",
         ).encode("utf-8-sig")
+
         st.download_button(
             "Descargar CSV",
             data=csv_resultados,
@@ -469,23 +483,21 @@ with columna_resumen:
             mime="text/csv",
             use_container_width=True,
         )
-    else:
-        st.button(
-            "Descargar CSV",
-            disabled=True,
-            use_container_width=True,
-        )
 
+    # Este indicador queda siempre al final.
     tarjeta_metrica(
-        "Valor CK tienda",
-        f"1 CK = ${VALOR_CK_CLP} CLP"
+        "Cartas encontradas",
+        (
+            f"{cartas_unicas}/{total_buscadas}"
+            if total_buscadas
+            else "—"
+        ),
+        (
+            f"{unidades} unidades disponibles"
+            if resultados_actuales
+            else ""
+        ),
     )
-
-    tarjeta_metrica(
-        "Valor total CLP",
-        precio_clp_texto(total_clp) if resultados_actuales else "—",
-    )
-
 if "resultados" in st.session_state:
     resultados = st.session_state["resultados"]
     no_encontradas = st.session_state["no_encontradas"]
