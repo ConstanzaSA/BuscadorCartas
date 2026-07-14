@@ -236,36 +236,41 @@ st.markdown(
             padding-top: 0.5rem;
             padding-bottom: 3rem;
         }}
-        .hero {{
+        .buscador-hero {{
+            position: relative;
+            isolation: isolate;
+        
             display: flex;
             align-items: center;
             justify-content: space-between;
             gap: 2rem;
-
+        
             min-height: 160px;
             padding: 1.6rem 2rem;
             margin-bottom: 1.4rem;
-
+        
             border: 1px solid rgba(170, 141, 175, 0.20);
-            border-radius: 18px !important;
-
+            border-radius: 22px !important;
+        
             background: linear-gradient(
                 115deg,
                 {COLOR_MORADO_OSCURO} 0%,
                 #44365F 65%,
                 {COLOR_MORADO_MEDIO} 100%
             );
-
+        
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.30);
-            overflow: hidden;
+        
+            overflow: hidden !important;
+            clip-path: inset(0 round 22px);
         }}
 
-        .hero-text {{
+        .buscador-hero-text {{
             flex: 1;
             min-width: 0;
         }}
 
-        .hero h1 {{
+        .buscador-hero h1 {{
             margin: 0 0 0.8rem 0;
             color: {COLOR_BLANCO};
             font-size: clamp(2rem, 4vw, 3.2rem);
@@ -273,28 +278,11 @@ st.markdown(
             font-weight: 850;
         }}
 
-        .hero p {{
+        .buscador-hero p {{
             margin: 0;
             color: #EEEAF3;
             font-size: 1rem;
         }}
-
-        .hero-logo {{
-            width: 125px !important;
-            height: 125px !important;
-            min-width: 125px !important;
-            max-width: 125px !important;
-            max-height: 125px !important;
-
-            object-fit: contain;
-            flex: 0 0 125px;
-
-            margin-left: auto;
-
-            border-radius: 18px;
-            box-shadow: 0 7px 20px rgba(0, 0, 0, 0.25);
-        }}
-
         @media (max-width: 700px) {{
             .hero {{
                 min-height: 130px;
@@ -445,8 +433,8 @@ imagen_html = (
 
 st.markdown(
     f"""
-    <section class="hero">
-    <div class="hero-text">
+    <section class="buscador-hero">
+    <div class="buscador-hero-text">
         <h1>Buscador de Cartas</h1>
             <p>Optimiza tu búsqueda de cartas para el stock actual de la tienda El Wombat Rabioso TCG.</p>
         </div>
