@@ -50,7 +50,6 @@ NOMBRES_CARPETAS = {
 
 st.set_page_config(
     page_title="Buscador de Cartas",
-    page_icon="🃏",
     layout="wide",
 )
 
