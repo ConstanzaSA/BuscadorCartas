@@ -207,6 +207,25 @@ def tarjeta_metrica(titulo: str, valor: str, subtitulo: str = "") -> None:
 st.markdown(
     f"""
     <style>
+        html,
+        body,
+        #root,
+        [data-testid="stAppViewContainer"],
+        [data-testid="stApp"] {{
+            margin: 0 !important;
+            padding: 0 !important;
+            background-color: {COLOR_FONDO} !important;
+        }}
+
+        [data-testid="stHeader"] {{
+            background-color: {COLOR_FONDO} !important;
+            border: none !important;
+            box-shadow: none !important;
+        }}
+
+        [data-testid="stDecoration"] {{
+            display: none !important;
+        }}
         .stApp {{
             background: {COLOR_FONDO};
             color: {COLOR_TEXTO};
