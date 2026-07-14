@@ -233,7 +233,7 @@ st.markdown(
 
         .block-container {{
             max-width: 1360px;
-            padding-top: 1.2rem;
+            padding-top: 0.5rem;
             padding-bottom: 3rem;
         }}
         .hero {{
