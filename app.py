@@ -207,45 +207,132 @@ def tarjeta_metrica(titulo: str, valor: str, subtitulo: str = "") -> None:
 st.markdown(
     f"""
     <style>
-        :root {{
-            --morado-oscuro: {COLOR_MORADO_OSCURO};
-            --morado-medio: {COLOR_MORADO_MEDIO};
-            --lila: {COLOR_LILA};
-            --gris-violeta: {COLOR_GRIS_VIOLETA};
-            --fondo: {COLOR_FONDO};
-            --texto: {COLOR_TEXTO};
-            --blanco: {COLOR_BLANCO};
+        .stApp {{
+            background: {COLOR_FONDO};
+            color: {COLOR_TEXTO};
         }}
-        .stApp {{ background: var(--fondo); color: var(--texto); }}
-        .block-container {{ max-width: 1360px; padding-top: 1.2rem; padding-bottom: 3rem; }}
-        [data-testid="stHeader"] {{ background: transparent; }}
-        .hero {{
-            display: flex; align-items: center; justify-content: space-between;
-            gap: 2rem; min-height: 180px; padding: 1.7rem 2.2rem;
-            margin-bottom: 1.4rem; border-radius: 0 0 24px 24px;
-            background: linear-gradient(115deg, var(--morado-oscuro) 0%, #44365F 65%, var(--morado-medio) 100%);
-            box-shadow: 0 10px 28px rgba(48,43,79,.20); overflow: hidden;
+
+        .block-container {{
+            max-width: 1360px;
+            padding-top: 1.2rem;
+            padding-bottom: 3rem;
         }}
-        .hero h1 {{ color: white; font-size: clamp(2rem,4vw,3.4rem); line-height: 1; margin: 0 0 .7rem 0; font-weight: 800; letter-spacing: -.04em; }}
-        .hero p {{ color: #EEEAF3; max-width: 760px; margin: 0; font-size: 1.02rem; }}
-        .hero-logo {{ width: min(170px,24vw); max-height: 145px; object-fit: contain; border-radius: 18px; background: rgba(255,255,255,.94); padding: .55rem; box-shadow: 0 8px 22px rgba(0,0,0,.20); }}
-        .panel-title {{ margin: 0 0 .25rem 0; color: var(--morado-oscuro); font-size: 1.15rem; font-weight: 800; }}
-        .panel-caption {{ margin-bottom: .8rem; color: #686271; font-size: .92rem; }}
-        .metric-card {{ min-height: 104px; margin-bottom: .75rem; padding: 1rem 1.1rem; border: 1px solid rgba(110,90,135,.18); border-left: 7px solid var(--lila); border-radius: 16px; background: white; box-shadow: 0 6px 18px rgba(48,43,79,.07); }}
-        .metric-title {{ color: #6D6875; font-size: .85rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; }}
-        .metric-value {{ margin-top: .18rem; color: var(--morado-oscuro); font-size: 1.75rem; line-height: 1.15; font-weight: 850; }}
-        .metric-subtitle {{ min-height: 1.15rem; margin-top: .22rem; color: #817B86; font-size: .78rem; }}
-        .section-title {{ margin: 2rem 0 .65rem 0; color: var(--morado-oscuro); font-size: 1.35rem; font-weight: 850; }}
-        .facebook-strip {{ display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin: .3rem 0 1.2rem 0; padding: .85rem 1rem; border-radius: 14px; background: #EDE8F0; color: var(--morado-oscuro); }}
-        .facebook-strip a {{ color: var(--morado-oscuro); font-weight: 800; text-decoration: none; }}
-        div[data-testid="stTextArea"] textarea {{ min-height: 250px; border: 1.5px solid var(--gris-violeta); border-radius: 14px; background: #FBFAFC; }}
-        div[data-testid="stTextArea"] textarea:focus {{ border-color: var(--morado-medio); box-shadow: 0 0 0 2px rgba(110,90,135,.16); }}
-        .stButton > button, .stDownloadButton > button, .stLinkButton > a {{ min-height: 44px; border: none; border-radius: 999px; background: var(--morado-oscuro); color: white; font-weight: 800; }}
-        .stButton > button:hover, .stDownloadButton > button:hover, .stLinkButton > a:hover {{ background: var(--morado-medio); color: white; border: none; }}
-        button[data-baseweb="tab"] {{ color: var(--morado-oscuro); font-weight: 800; }}
-        button[data-baseweb="tab"][aria-selected="true"] {{ color: var(--morado-oscuro); border-bottom-color: var(--morado-oscuro); }}
-        [data-testid="stDataFrame"] {{ border: 1px solid rgba(110,90,135,.20); border-radius: 14px; overflow: hidden; }}
-        @media (max-width: 760px) {{ .hero {{ min-height: auto; padding: 1.4rem; }} .hero-logo {{ width: 105px; }} }}
+
+        p, span, label {{
+            color: {COLOR_TEXTO};
+        }}
+
+        .panel {{
+            padding: 1.35rem;
+            border: 1px solid rgba(170, 141, 175, 0.25);
+            border-radius: 18px;
+            background: {COLOR_PANEL};
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.30);
+        }}
+
+        .panel-title {{
+            margin: 0 0 0.25rem 0;
+            color: {COLOR_BLANCO};
+            font-size: 1.15rem;
+            font-weight: 800;
+        }}
+
+        .panel-caption {{
+            margin-bottom: 0.8rem;
+            color: {COLOR_TEXTO_SECUNDARIO};
+            font-size: 0.92rem;
+        }}
+
+        .metric-card {{
+            min-height: 104px;
+            margin-bottom: 0.75rem;
+            padding: 1rem 1.1rem;
+            border: 1px solid rgba(170, 141, 175, 0.24);
+            border-left: 7px solid {COLOR_LILA};
+            border-radius: 16px;
+            background: {COLOR_PANEL};
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.28);
+        }}
+
+        .metric-title {{
+            color: {COLOR_TEXTO_SECUNDARIO};
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }}
+
+        .metric-value {{
+            margin-top: 0.18rem;
+            color: {COLOR_BLANCO};
+            font-size: 1.75rem;
+            line-height: 1.15;
+            font-weight: 850;
+        }}
+
+        .metric-subtitle {{
+            min-height: 1.15rem;
+            margin-top: 0.22rem;
+            color: {COLOR_TEXTO_SECUNDARIO};
+            font-size: 0.78rem;
+        }}
+
+        .section-title {{
+            color: {COLOR_BLANCO};
+        }}
+
+        .facebook-strip {{
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            margin: 0.3rem 0 1.2rem 0;
+            padding: 0.85rem 1rem;
+            border: 1px solid rgba(170, 141, 175, 0.20);
+            border-radius: 14px;
+            background: {COLOR_PANEL};
+            color: {COLOR_TEXTO};
+        }}
+
+        .facebook-strip a {{
+            color: #D4A7FF;
+            font-weight: 800;
+            text-decoration: none;
+        }}
+
+        div[data-testid="stTextArea"] textarea {{
+            min-height: 250px;
+            border: 1.5px solid {COLOR_GRIS_VIOLETA};
+            border-radius: 14px;
+            background: {COLOR_PANEL};
+            color: {COLOR_BLANCO};
+        }}
+
+        div[data-testid="stTextArea"] textarea::placeholder {{
+            color: #AFA8BA;
+            opacity: 1;
+        }}
+
+        div[data-testid="stTextArea"] textarea:focus {{
+            border-color: #A95AFF;
+            box-shadow: 0 0 0 2px rgba(169, 90, 255, 0.20);
+        }}
+
+        .empty-warning {{
+            margin-top: 1rem;
+            padding: 0.9rem 1rem;
+            border: 1px solid #8F62B0;
+            border-radius: 12px;
+            background: #2B2135;
+            color: #F7F4FA;
+            font-weight: 650;
+        }}
+
+        [data-testid="stDataFrame"] {{
+            border: 1px solid rgba(170, 141, 175, 0.25);
+            border-radius: 14px;
+            overflow: hidden;
+        }}
     </style>
     """,
     unsafe_allow_html=True,
