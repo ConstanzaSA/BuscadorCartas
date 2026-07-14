@@ -480,6 +480,22 @@ with columna_resumen:
             else ""
         ),
     )
+    if resultados_actuales:
+        csv_resultados = pd.DataFrame(
+            resultados_actuales
+        ).to_csv(
+            index=False,
+            sep=";",
+            decimal=",",
+        ).encode("utf-8-sig")
+
+        st.download_button(
+            "Descargar CSV",
+            data=csv_resultados,
+            file_name="Resultados_Buscador_Cartas.csv",
+            mime="text/csv",
+            use_container_width=True,
+    )
 if "resultados" in st.session_state:
     resultados = st.session_state["resultados"]
     no_encontradas = st.session_state["no_encontradas"]
