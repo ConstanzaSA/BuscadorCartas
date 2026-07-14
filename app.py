@@ -69,17 +69,17 @@ def normalizar_nombre(nombre: str) -> str:
     return " ".join(str(nombre).strip().casefold().split())
 
 
-def parsear_cartas(texto: str) -> list[str]:
+def parsear_cartas(texto: str) -> list[dict[str, Any]]:
     """
     Acepta líneas como:
-        1 Sol Ring
+        3 Sol Ring
         1 Akroma's Will
 
-    La cantidad inicial forma parte del formato de entrada. La cantidad
-    mostrada en los resultados es la encontrada en los mazos de Moxfield.
+    La cantidad escrita por el usuario se conserva como ``Cantidad_buscada``.
+    Si una misma carta aparece más de una vez, sus cantidades se suman.
+    Cuando no se escribe una cantidad, se asume 1.
     """
-    cartas: list[str] = []
-    vistas: set[str] = set()
+    cartas_por_nombre: dict[str, dict[str, Any]] = {}
 
     for linea in str(texto).splitlines():
         linea = linea.strip()
@@ -87,16 +87,31 @@ def parsear_cartas(texto: str) -> list[str]:
         if not linea or linea.startswith("#"):
             continue
 
-        coincidencia = re.match(r"^\s*\d+\s+(.+?)\s*$", linea)
-        nombre = coincidencia.group(1).strip() if coincidencia else linea
+        coincidencia = re.match(r"^\s*(\d+)\s+(.+?)\s*$", linea)
+
+        if coincidencia:
+            cantidad_buscada = int(coincidencia.group(1))
+            nombre = coincidencia.group(2).strip()
+        else:
+            cantidad_buscada = 1
+            nombre = linea
+
+        if cantidad_buscada <= 0:
+            continue
+
         clave = normalizar_nombre(nombre)
+        if not clave:
+            continue
 
-        if clave and clave not in vistas:
-            cartas.append(nombre)
-            vistas.add(clave)
+        if clave in cartas_por_nombre:
+            cartas_por_nombre[clave]["Cantidad_buscada"] += cantidad_buscada
+        else:
+            cartas_por_nombre[clave] = {
+                "nombre": nombre,
+                "Cantidad_buscada": cantidad_buscada,
+            }
 
-    return cartas
-
+    return list(cartas_por_nombre.values())
 
 def nombre_carpeta(clave: str) -> str:
     return NOMBRES_CARPETAS.get(
