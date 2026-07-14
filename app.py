@@ -466,24 +466,6 @@ with columna_resumen:
         "Precio CK x 700 x cantidad",
     )
 
-    # El botón solo aparece después de realizar una búsqueda.
-    if resultados_actuales:
-        csv_resultados = pd.DataFrame(
-            resultados_actuales
-        ).to_csv(
-            index=False,
-            sep=";",
-            decimal=",",
-        ).encode("utf-8-sig")
-
-        st.download_button(
-            "Descargar CSV",
-            data=csv_resultados,
-            file_name="Resultados_Buscador_Cartas.csv",
-            mime="text/csv",
-            use_container_width=True,
-        )
-
     # Este indicador queda siempre al final.
     tarjeta_metrica(
         "Cartas encontradas",
