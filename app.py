@@ -271,10 +271,8 @@ st.markdown(
             flex: 0 0 125px;
 
             margin-left: auto;
-            padding: 7px;
 
             border-radius: 18px;
-            background: rgba(255, 255, 255, 0.94);
             box-shadow: 0 7px 20px rgba(0, 0, 0, 0.25);
         }}
 
